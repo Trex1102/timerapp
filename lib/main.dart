@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
+import 'package:just_audio/just_audio.dart';
+import 'finished_timer_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -43,13 +45,36 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   late Timer _timer;
 
-  int _seconds = 3600;
+  late AudioPlayer player;
+
+
+  void loadAudio(){
+    player.setAsset('resource/alarm.wav');
+  }
+
+  void playAudio() {
+    player.play();
+  }
+
+  void pauseAudio() {
+    player.pause();
+  }
+
+  void stopAudio() {
+    player.stop();
+  }
+
+
+
+
+  int _seconds = 6;
   bool _isRunning = false;
   int _tempseconds = 0;
 
   @override
   void initState() {
     super.initState();
+    player = AudioPlayer();
     startTimer();
   }
 
@@ -63,6 +88,14 @@ class _MyHomePageState extends State<MyHomePage> {
             } else {
               _timer.cancel();
               _isRunning = false;
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const FinishedTimerScreen(),
+                ),
+              );
+
             }
         });
       });
@@ -80,8 +113,8 @@ class _MyHomePageState extends State<MyHomePage> {
   void resetTimer() {
     _timer.cancel();
     setState(() {
-      _seconds = 3600;
-      _tempseconds = 3600;
+      _seconds = 6;
+      _tempseconds = 6;
       _isRunning = false;
     });
   }
@@ -99,7 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   double getProgress() {
-    return (_seconds) / 60;
+    return (_seconds) / 6;
   }
 
   @override
@@ -167,6 +200,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     icon: const Icon(Icons.restore),
                     onPressed: () {
                       setState(() {
+
+                        loadAudio();
+                        playAudio();
+
                         resetTimer();
                       });
                     },
